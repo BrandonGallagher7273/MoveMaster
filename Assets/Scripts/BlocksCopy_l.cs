@@ -7,14 +7,21 @@ public class BlocksCopy : MonoBehaviour
     public GameObject prefab;
     public int blocks = 27;
 
+    public MeshRenderer red;
     void Start()
     {
         int flag = 0;
         int count = 0;
+        int currentBlock = 0;
         for (int i = 0; i < blocks/3; i++) {
             for (int p = 0; p < 3; p++) {
-                GameObject clone = Instantiate(prefab);
-                clone.transform.position = new Vector3(50+p*0.75f,.90f*count,50);
+                if(currentBlock != 26)
+                {
+                    GameObject clone = Instantiate(prefab);
+                    clone.transform.position = new Vector3(50+p*0.75f,.91f*count,50);
+                    currentBlock++;
+                }
+                
             }
             count++;
         }
