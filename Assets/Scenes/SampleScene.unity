@@ -414,8 +414,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 4.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -439,13 +439,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.94, z: 0}
+  m_LocalRotation: {x: 0.21416606, y: -0.37079868, z: 0.08829909, w: 0.8993579}
+  m_LocalPosition: {x: 65.3365, y: 14.55935, z: 35.2324}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1498338314}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 26.789, y: -44.812, z: 0}
 --- !u!1 &965255626
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,7 +459,7 @@ GameObject:
   - component: {fileID: 965255628}
   m_Layer: 0
   m_Name: VisualMesh_right
-  m_TagString: Untagged
+  m_TagString: Selectable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -635,9 +635,10 @@ GameObject:
   - component: {fileID: 1215335512}
   - component: {fileID: 1215335511}
   - component: {fileID: 1215335510}
+  - component: {fileID: 1215335514}
   m_Layer: 0
   m_Name: JengaBlock_right
-  m_TagString: Untagged
+  m_TagString: Selectable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -756,6 +757,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1215335508}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1215335514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215335508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c72c05e65d5f934382399fce8e270ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1216085974
 GameObject:
   m_ObjectHideFlags: 0
@@ -769,9 +782,10 @@ GameObject:
   - component: {fileID: 1216085979}
   - component: {fileID: 1216085978}
   - component: {fileID: 1216085976}
+  - component: {fileID: 1216085981}
   m_Layer: 0
   m_Name: JengaBlock_left
-  m_TagString: Untagged
+  m_TagString: Selectable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -890,6 +904,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1216085974}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1216085981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216085974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c72c05e65d5f934382399fce8e270ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1498338313
 GameObject:
   m_ObjectHideFlags: 0
@@ -900,8 +926,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1498338314}
   - component: {fileID: 1498338317}
-  - component: {fileID: 1498338316}
-  - component: {fileID: 1498338315}
   - component: {fileID: 1498338318}
   - component: {fileID: 1498338319}
   - component: {fileID: 1498338320}
@@ -927,43 +951,8 @@ Transform:
   m_Children:
   - {fileID: 617660211}
   - {fileID: 576845494}
-  - {fileID: 963194228}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1498338315
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1498338313}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4862ef9b4dde4d94185117054cbc6837, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  controller: {fileID: 1498338317}
-  speed: 12
-  gravity: -19.62
-  jumpHeight: 3
-  groundCheck: {fileID: 617660211}
-  groundDistance: 0.4
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 0
---- !u!114 &1498338316
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1498338313}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74214d0c15f800b4a96e16f69e859f65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mouseSensitivity: 1000
 --- !u!143 &1498338317
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1026,6 +1015,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 1216085974}
   blocks: 27
+  a: -1
+  b: -1
 --- !u!114 &1498338320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1040,6 +1031,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 1215335508}
   blocks: 27
+  a: -1
+  b: -1
 --- !u!1 &1931592511
 GameObject:
   m_ObjectHideFlags: 0
@@ -1053,7 +1046,7 @@ GameObject:
   - component: {fileID: 1931592513}
   m_Layer: 0
   m_Name: VisualMesh_left
-  m_TagString: Untagged
+  m_TagString: Selectable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1175,5 +1168,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 705507995}
   - {fileID: 1134584981}
+  - {fileID: 963194228}
   - {fileID: 1498338314}
   - {fileID: 2096060283}

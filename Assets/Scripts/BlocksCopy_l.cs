@@ -6,38 +6,42 @@ public class BlocksCopy : MonoBehaviour
 {
     public GameObject prefab;
     public int blocks = 27;
+    public int a = -1;
+    public int b = -1;
+    int tag_i = 28;
+    string tag_s;
 
-    public MeshRenderer red;
     void Start()
     {
-        int flag = 0;
+        if (a > 8) {
+            a = -1;
+        }
+        if (b > 2) {
+            b = -1;
+        }
         int count = 0;
-        int currentBlock = 0;
         for (int i = 0; i < blocks/3; i++) {
             for (int p = 0; p < 3; p++) {
-                if(currentBlock != 26)
-                {
+                if (i != a || p != b) {
+                    tag_s = tag_i.ToString();
                     GameObject clone = Instantiate(prefab);
-                    clone.transform.position = new Vector3(50+p*0.75f,.91f*count,50);
-                    currentBlock++;
+                    clone.tag = "Selectable";
+                    clone.transform.position = new Vector3(50+p*0.75f,.92f*count,50);
+                    tag_i++;
                 }
-                
             }
             count++;
         }
 
     }
-
-        /*
-        int count = 0;
-        for (int i = 0; i < 18; i++) {
-            for(int a = 0; a < 3; a++) {
-                GameObject clone = Instantiate(prefab);
-                clone.transform.position = new Vector3(50,2,50+i*.75f);
-            }
-            count++;
+    /*
+    void Update() {
+        if (Input.GetMouseButton (0)) {
+            Destroy(GameObject.FindGameObjectWithTag(tag_s));
         }
-        */
+    }
+    */
+
  }
 
 
