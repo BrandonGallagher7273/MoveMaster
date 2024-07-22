@@ -6,32 +6,20 @@ using UnityEngine;
 
 public class DestroyOnClick : MonoBehaviour
 {
+
+    public GameObject player;
+    
     void Start() {
-        StartDelay();
+        player = GameObject.Find("Player");
     }
+    
     public static Boolean started = false;
-
-    public void StartDelay()
-    {
-        // Start the coroutine and pass the duration of the delay
-        StartCoroutine(WaitAndExecute(5.0f)); // Wait for 5 seconds
-    }
-
-    // Coroutine method
-    private IEnumerator WaitAndExecute(float waitTime)
-    {
-        // Wait for the specified duration
-        yield return new WaitForSeconds(waitTime);
-
-        // Code to execute after the delay
-        started = true;
-        Debug.Log("hey!\n");
-    }
     
     private void OnMouseDown()
     {
         if (started == false) {
             Destroy(gameObject);
+            
         }
     }
 }

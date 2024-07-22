@@ -8,9 +8,11 @@ public class BlocksCopy : MonoBehaviour
     public GameObject prefab;
     public int blocks = 27;
     private Rigidbody rb;
-    private List<GameObject> clones = new List<GameObject>();
+    public List<GameObject> clones = new List<GameObject>();
     private Boolean flag = false;
-    void ChangeAttribute(Boolean flag) {
+    public String spawn_code = "111111111111111111111111111";
+    public String temp_spawn_code = "111111111111111111111111111";
+    void ChangeAttribute1(Boolean flag) {
         if (flag == false) {
             foreach (GameObject clone in clones) {
                 if (clone != null) {
@@ -20,28 +22,52 @@ public class BlocksCopy : MonoBehaviour
             }
         }
     }
+    void ChangeAttribute2(Boolean flag) {
+        if (flag == false) {
+            foreach (GameObject clone in clones) {
+                if (clone != null) {
+                    rb = clone.GetComponent<Rigidbody>();
+                    rb.isKinematic = true;
+                }
+            }
+        }
+    }
     void Start()
     {
+        SpawnBlocks();
+    }
+    void Update() {
+        if (DestroyOnClick.started == true) {
+            ChangeAttribute1(flag);
+            flag = true;
+        } else {
+            ChangeAttribute2(flag);
+            flag = false;
+        }
+    }
+
+    public void SpawnBlocks() {
+        foreach (GameObject clone in clones) {
+            Destroy(clone);
+        }
         int count = 0;
+        int spawned = 0;
         rb = prefab.GetComponentInChildren<Rigidbody>();
         rb.isKinematic = true;
         for (int i = 0; i < blocks/3; i++) {
             for (int p = 0; p < 3; p++) {
-                GameObject clone = Instantiate(prefab);
-                clone.tag = "Selectable";
-                clone.transform.position = new Vector3(50+p*0.75f,.92f*count+0.1f,50);
-                clones.Add(clone);
+                if (spawn_code[spawned] == '1') {
+                    GameObject clone = Instantiate(prefab);
+                    clone.tag = "Selectable";
+                    clone.transform.position = new Vector3(50+p*0.75f,.92f*count+0.25f,50);
+                    clones.Add(clone);
+                }
+                spawned++;
             }
             count++;
         }
+    }
 
-    }
-    void Update() {
-        if (DestroyOnClick.started == true) {
-            ChangeAttribute(flag);
-            flag = true;
-        }
-    }
  }
 
 
