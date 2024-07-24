@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BlocksCopy_4 : MonoBehaviour
@@ -10,9 +11,11 @@ public class BlocksCopy_4 : MonoBehaviour
     public int blocks = 27;
     private Rigidbody rb;
     public List<GameObject> clones = new List<GameObject>();
-    public String spawn_code = "111111111111111111111111111";
-    public String temp_spawn_code = "111111111111111111111111111";
+    private static List<char> spawn_code = Enumerable.Repeat('1', 27).ToList();
+    public static List<char> temp_spawn_code = Enumerable.Repeat('1', 27).ToList();
     private Boolean flag = false;
+
+
     void ChangeAttribute1(Boolean flag) {
         if (flag == false) {
             foreach (GameObject clone in clones) {
@@ -33,6 +36,21 @@ public class BlocksCopy_4 : MonoBehaviour
             }
         }
     }
+
+    public void NewTempCode_r(List<char> code) {
+        temp_spawn_code = new List<char>(code);
+    }
+
+    public void SetSpawnCode_r() {
+        Debug.Log("heyr!");
+        spawn_code = new List<char>(temp_spawn_code);
+    }
+    public void ResetSpawnCode_r() {
+        spawn_code = Enumerable.Repeat('1', 27).ToList();
+        temp_spawn_code = Enumerable.Repeat('1', 27).ToList();
+        SpawnBlocks();
+    }
+
     void Start()
     {
         SpawnBlocks();
@@ -49,6 +67,9 @@ public class BlocksCopy_4 : MonoBehaviour
     }
 
     public void SpawnBlocks() {
+        int tag_i = 1;
+        string tag_s;
+        temp_spawn_code = new List<char>(spawn_code);
         foreach (GameObject clone in clones) {
             Destroy(clone);
         }
@@ -59,10 +80,12 @@ public class BlocksCopy_4 : MonoBehaviour
         for (int i = 0; i < blocks/3; i++) {
             for (int p = 0; p < 3; p++) {
                 if (spawn_code[spawned] == '1') {
-                   GameObject clone = Instantiate(prefab);
-                    clone.tag = "Selectable";
+                    GameObject clone = Instantiate(prefab);
+                    tag_s = tag_i.ToString();
+                    clone.tag = tag_s;
                     clone.transform.position = new Vector3(50.75f,.92f*count+.70f,49.25f+p*0.75f);
                     clones.Add(clone); 
+                    tag_i++;
                 }
                 spawned++;
             }

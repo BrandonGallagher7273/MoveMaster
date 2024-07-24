@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BlocksCopy : MonoBehaviour
@@ -10,8 +11,8 @@ public class BlocksCopy : MonoBehaviour
     private Rigidbody rb;
     public List<GameObject> clones = new List<GameObject>();
     private Boolean flag = false;
-    public String spawn_code = "111111111111111111111111111";
-    public String temp_spawn_code = "111111111111111111111111111";
+    private static List<char> spawn_code = Enumerable.Repeat('1', 27).ToList();
+    public static List<char> temp_spawn_code = Enumerable.Repeat('1', 27).ToList();
     void ChangeAttribute1(Boolean flag) {
         if (flag == false) {
             foreach (GameObject clone in clones) {
@@ -32,6 +33,20 @@ public class BlocksCopy : MonoBehaviour
             }
         }
     }
+
+    public void NewTempCode_l(List<char> code) {
+        temp_spawn_code = new List<char>(code);
+    }
+
+    public void SetSpawnCode_l() {
+        Debug.Log("heyl!");
+        spawn_code = new List<char>(temp_spawn_code);
+    }
+    public void ResetSpawnCode_l() {
+        spawn_code = Enumerable.Repeat('1', 27).ToList();
+        temp_spawn_code = Enumerable.Repeat('1', 27).ToList();
+        SpawnBlocks();
+    }
     void Start()
     {
         SpawnBlocks();
@@ -44,9 +59,15 @@ public class BlocksCopy : MonoBehaviour
             ChangeAttribute2(flag);
             flag = false;
         }
+        if (spawn_code[0] != '1') {
+            Debug.Log("CHANGED");
+        }
     }
 
     public void SpawnBlocks() {
+        int tag_i = 28;
+        string tag_s;
+        temp_spawn_code = new List<char>(spawn_code);
         foreach (GameObject clone in clones) {
             Destroy(clone);
         }
@@ -57,10 +78,12 @@ public class BlocksCopy : MonoBehaviour
         for (int i = 0; i < blocks/3; i++) {
             for (int p = 0; p < 3; p++) {
                 if (spawn_code[spawned] == '1') {
+                    tag_s = tag_i.ToString();
                     GameObject clone = Instantiate(prefab);
-                    clone.tag = "Selectable";
+                    clone.tag = tag_s;
                     clone.transform.position = new Vector3(50+p*0.75f,.92f*count+0.25f,50);
                     clones.Add(clone);
+                    tag_i++;
                 }
                 spawned++;
             }

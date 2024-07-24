@@ -14,7 +14,7 @@ public class StopPhysics : MonoBehaviour
     void Update() {
         if (DestroyOnClick.started == true) {
             rend.enabled=true;
-            transform.position = new Vector3(45.5f, 1f, 42f);
+            transform.position = new Vector3(47f, 1f, 44f);
         } else {
             rend.enabled=false;
             transform.position = new Vector3(40.5f, 1f, 42f);
