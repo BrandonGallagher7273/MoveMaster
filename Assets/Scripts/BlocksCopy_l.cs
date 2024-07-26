@@ -81,7 +81,7 @@ public class BlocksCopy : MonoBehaviour
                     tag_s = tag_i.ToString();
                     GameObject clone = Instantiate(prefab);
                     clone.tag = tag_s;
-                    clone.transform.position = new Vector3(50+p*0.75f,.92f*count+0.25f,50);
+                    clone.transform.position = new Vector3(50+p*0.75f,.90f*count+0.225f,50);
                     clones.Add(clone);
                     tag_i++;
                 }

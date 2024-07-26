@@ -20,7 +20,6 @@ public class StartPhysics : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        Debug.Log("cube works\n");
         DestroyOnClick.started = true;
     }
 }
