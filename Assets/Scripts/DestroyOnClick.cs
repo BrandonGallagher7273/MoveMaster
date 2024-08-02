@@ -8,9 +8,11 @@ public class DestroyOnClick : MonoBehaviour
 {
 
     public GameObject player;
+    public GameObject valid_checker;
     
     void Start() {
         player = GameObject.Find("Player");
+        valid_checker = GameObject.Find("Valid_Check");
     }
     
     public static Boolean started = false;
@@ -18,7 +20,7 @@ public class DestroyOnClick : MonoBehaviour
     private void OnMouseDown()
     {
         if (started == false) {
-            Debug.Log(gameObject.tag);
+            //Debug.Log(gameObject.tag);
             int tag_i = Int32.Parse(gameObject.tag);
             if (tag_i <= 27) {
                 List<char> code = BlocksCopy_4.temp_spawn_code;
@@ -32,7 +34,8 @@ public class DestroyOnClick : MonoBehaviour
                 scrpt.NewTempCode_l(code);
             }
             Destroy(gameObject);
-            
+            DetectFall checker = valid_checker.GetComponent<DetectFall>();
+            checker.FallingState();
         }
     }
 }
