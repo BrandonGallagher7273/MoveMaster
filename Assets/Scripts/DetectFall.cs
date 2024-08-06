@@ -23,7 +23,6 @@ public class DetectFall : MonoBehaviour
             for (int b = 0; b < 2; b++) {
                 if (BlocksCopy.temp_spawn_code[a+b] == '0') {
                     if (BlocksCopy.temp_spawn_code[a+b+1] == '0') {
-                        Debug.Log("FALSE");
                         ChangeMat(0);
                         return false;
                     }
@@ -38,7 +37,6 @@ public class DetectFall : MonoBehaviour
             for (int b = 0; b < 2; b++) {
                 if (BlocksCopy_4.temp_spawn_code[a+b] == '0') {
                     if (BlocksCopy_4.temp_spawn_code[a+b+1] == '0') {
-                        Debug.Log("FALSE");
                         ChangeMat(0);
                         return false;
                     }
@@ -50,7 +48,6 @@ public class DetectFall : MonoBehaviour
             }
         }
         ChangeMat(1);
-        Debug.Log("TRUE");
         return true;
     }
 }

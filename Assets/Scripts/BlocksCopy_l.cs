@@ -39,7 +39,6 @@ public class BlocksCopy : MonoBehaviour
     }
 
     public void SetSpawnCode_l() {
-        Debug.Log("heyl!");
         spawn_code = new List<char>(temp_spawn_code);
     }
     public void ResetSpawnCode_l() {
@@ -58,9 +57,6 @@ public class BlocksCopy : MonoBehaviour
         } else {
             ChangeAttribute2(flag);
             flag = false;
-        }
-        if (spawn_code[0] != '1') {
-            Debug.Log("CHANGED");
         }
     }
 
@@ -89,6 +85,7 @@ public class BlocksCopy : MonoBehaviour
             }
             count++;
         }
+        
     }
 
  }

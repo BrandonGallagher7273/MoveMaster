@@ -10,11 +10,13 @@ public class StartPhysics : MonoBehaviour
     public Material start_mat;
     public Material stop_mat;
     public GameObject player;
+    public GameObject valid_checker;
     public bool clicked = false;
     void Start() {
         rend = GetComponent<MeshRenderer>();
         matRend = GetComponent<Renderer>(); 
         player = GameObject.Find("Player");
+        valid_checker = GameObject.Find("Valid_Check");
     }
     void Update() {
         if (DestroyOnClick.started == false) {
@@ -32,12 +34,13 @@ public class StartPhysics : MonoBehaviour
         if(clicked)
         {
             matRend.material = start_mat;
-            Debug.Log("cube works2\n");
             DestroyOnClick.started = false;
             BlocksCopy bc_1 = player.GetComponent<BlocksCopy>();
             bc_1.SpawnBlocks();
             BlocksCopy_4 bc_2 = player.GetComponent<BlocksCopy_4>();
             bc_2.SpawnBlocks();
+            DetectFall fall = valid_checker.GetComponent<DetectFall>();
+            fall.FallingState();
             clicked = false;
         }
         else

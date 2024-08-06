@@ -21,7 +21,6 @@ public class FreezeBlocks : MonoBehaviour
             rb.constraints = RigidbodyConstraints.FreezeRotation;
             rb.constraints = RigidbodyConstraints.FreezePosition;
             if(!FrozenSent) {
-                Debug.Log("Constraints have been frozen."); 
                 FrozenSent = true;
             }
         }
@@ -30,7 +29,6 @@ public class FreezeBlocks : MonoBehaviour
             FrozenSent = false;
             rb.constraints = RigidbodyConstraints.None;
             if(!UnfrozenSent) {
-                Debug.Log("Constraints have been unfrozen."); 
                 UnfrozenSent = true;
             }
          }

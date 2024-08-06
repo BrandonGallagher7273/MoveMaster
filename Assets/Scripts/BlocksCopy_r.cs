@@ -14,6 +14,7 @@ public class BlocksCopy_4 : MonoBehaviour
     private static List<char> spawn_code = Enumerable.Repeat('1', 27).ToList();
     public static List<char> temp_spawn_code = Enumerable.Repeat('1', 27).ToList();
     private Boolean flag = false;
+    
 
 
     void ChangeAttribute1(Boolean flag) {
@@ -42,7 +43,6 @@ public class BlocksCopy_4 : MonoBehaviour
     }
 
     public void SetSpawnCode_r() {
-        Debug.Log("heyr!");
         spawn_code = new List<char>(temp_spawn_code);
     }
     public void ResetSpawnCode_r() {
