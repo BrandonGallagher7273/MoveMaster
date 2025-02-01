@@ -1,0 +1,48 @@
+Jenga Game Sequence Breakdown + Analysis
+The following sequence is an example of how we will internally represent Jenga games:
+
+3.2 14.1 17.3 42.1 7.3 51.2 27.3 11.2 38.1 32.1 8.0
+
+- The first double represents Player 1's move.
+- The second double represents Player 2's move.
+- This alternating pattern continues until the end of the game sequence.
+- If the number of entries in the sequence is even, Player 1 wins.
+- If the number of entries in the sequence is odd, Player 2 wins.
+- The number before the decimal denotes the ID of the block being moved.
+- The number after the decimal denotes the position (1, 2, or 3) that the block is placed in on top 
+of the tower, 0 indicating the end of the game sequence.
+
+Let's analyze the stability of each layer of the tower using tribits:
+
+000 ==> Unstable	non-existent layer is invalid
+001 ==> Unstable	CoM of next layer would NOT be supported
+010 ==> Stable		CoM of next layer would be supported
+011 ==> Stable		CoM of next layer would be supported
+
+100 ==> Unstable	CoM of next layer would NOT be supported
+101 ==> Stable		CoM of next layer would be supported
+110 ==> Stable		CoM of next layer would be supported
+111 ==> Stable		CoM of next layer would be supported
+
+Conclusion: Layers with 2 or more consecutive 0s are Unstable.
+With this in mind, let's devise an algorithm to check for Unstable layers:
+
+status() function takes a block ID and returns 0 or 1, indicating the absence (0) or presence (1) 
+of a block. 
+
+x is the current block ID, if iterating over a list of blocks.
+
+if (((x - 2) % 3 == 0) && status(x) == 0)	# if center block is empty, check adjacent blocks...
+  if (status(x-1) == 0 || status(x+1) == 0)	# if adjacent block is empty...
+    return Unstable
+  else
+    return Stable		
+
+This works well for determining whether any of the first 18 layers will result in a fail state, 
+however because the block IDs are tied to specific blocks, we will have to devise a more accurate 
+way to check for fail states beyond layer 18, most likely based on the coordinates of the blocks 
+themselves.
+		
+
+
+
