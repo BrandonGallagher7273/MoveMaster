@@ -18,15 +18,21 @@ Each of these objectives is essential to our overall goal of producing a working
 
 
 ## Milestones
-### Beginning of Semester
+
+=======
+###Beginning of Semester
 Conduct research about Machine Learning, physics simulation, and software engine development
 Compile a list of resources that we will need with respect to setting up a development environment
 establish and familiarize ourselves with the codebase
-### Mid-Semester
+###Mid-Semester
+>>>>>>> master
 Develop a physics engine, and perform extensive testing of the physics engine to make it as realistic as possible
 Model Jenga in the physics engine, and begin development on the machine learning model that will simulate the game
 Train the model and tweak the underlying algorithms/program as necessary
 Troubleshoot and conduct additional research about any issues that may arise
+<<<<<<< HEAD
 ### End of Semester
+=======
+
 Ensure our repository is up to date, including updated code and readme
 Create an outline document for next steps post-semester
