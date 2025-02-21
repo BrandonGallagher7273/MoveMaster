@@ -145,7 +145,7 @@ public class PlaySequence : MonoBehaviour
             // Toggle started on for 5 seconds after placing
             DestroyOnClick.started = true;
             running.SetActive(true);
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(1f);
             running.SetActive(false);
             DestroyOnClick.started = false;
 

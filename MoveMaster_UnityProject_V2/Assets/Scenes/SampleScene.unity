@@ -2217,10 +2217,9 @@ GameObject:
   - component: {fileID: 1498338314}
   - component: {fileID: 1498338317}
   - component: {fileID: 1498338318}
-  - component: {fileID: 1498338319}
-  - component: {fileID: 1498338320}
   - component: {fileID: 1498338321}
   - component: {fileID: 1498338322}
+  - component: {fileID: 1498338323}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2291,36 +2290,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
---- !u!114 &1498338319
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1498338313}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a268a3e89ff640f408b288f07140cd19, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefab: {fileID: 1216085974}
-  blocks: 27
-  clones: []
---- !u!114 &1498338320
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1498338313}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3188f2f438b26541bdfb66e71641708, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefab: {fileID: 1215335508}
-  blocks: 27
-  clones: []
 --- !u!114 &1498338321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2357,6 +2326,20 @@ MonoBehaviour:
   blocks: 
   top: 
   plane: {fileID: 0}
+--- !u!114 &1498338323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1498338313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f60c4868428a85c4f9b4ff59ff23b0ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plane: {fileID: 0}
+  m_camera: {fileID: 0}
 --- !u!1 &1654347359
 GameObject:
   m_ObjectHideFlags: 0
