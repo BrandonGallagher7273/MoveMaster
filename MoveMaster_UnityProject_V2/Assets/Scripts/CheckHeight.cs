@@ -6,6 +6,8 @@ public class CheckHeight : MonoBehaviour
 {
     public GameObject plane;
     public Camera m_camera;
+    private float targetSize;
+    private float zoomVelocity = 0f; // Used for SmoothDamp
 
     void Start()
     {
@@ -27,7 +29,12 @@ public class CheckHeight : MonoBehaviour
                 count++;
             }
 
-            m_camera.orthographicSize = 4.5f + (0.5f * count);
+            // Compute the target size
+            targetSize = 4.5f + (0.00025f * count);
+
+            // Smoothly interpolate using SmoothDamp
+            m_camera.orthographicSize = Mathf.SmoothDamp(m_camera.orthographicSize, targetSize, ref zoomVelocity, 0.5f);
+            m_camera.transform.position = new Vector3(m_camera.transform.position.x,Mathf.SmoothDamp(m_camera.transform.position.y, m_camera.transform.position.y+(0.45f*count), ref zoomVelocity, 0.7f),m_camera.transform.position.z);
         }
         else
         {

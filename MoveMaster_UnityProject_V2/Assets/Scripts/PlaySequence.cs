@@ -29,7 +29,7 @@ public class PlaySequence : MonoBehaviour
     private int placedCount = 0;           // Resets every 3 placements
 
     // Initial plane setup & positions
-    private float planeHeightIncrement = 0.48f;
+    private float planeHeightIncrement = 0.45f;
     private Vector3 initialPlanePosition = new Vector3(50.75f, 8.275f, 50f);
     private Vector3 leftPosition;
     private Vector3 middlePosition;
@@ -145,7 +145,7 @@ public class PlaySequence : MonoBehaviour
             // Toggle started on for 5 seconds after placing
             DestroyOnClick.started = true;
             running.SetActive(true);
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
             running.SetActive(false);
             DestroyOnClick.started = false;
 
