@@ -31,12 +31,16 @@ of the tower.
 """
 
 #Probabilities
-TURN_INCREASE = 0 #0.002
-LAYERS_ABOVE_START = 0 #0.08
-SUBTRACT_PER_LAYER = 0 #0.003
-SIDE_INCREASE = 0.0 #0.008
-BLOCKS_AROUND = 0.004 #0.004
+TURN_INCREASE = 0.002 #0.002
+LAYERS_ABOVE_START = 0.08 #0.08
+SUBTRACT_PER_LAYER = 0.003 #0.003
+SIDE_INCREASE = 0.008 #0.008
+BLOCKS_AROUND = 0.008 #0.008
 BLOCK_AROUND_LIST = [0.0000] * 54
+
+
+#Counters
+PROB_UNDER_COUNT = 0
 
 
 
@@ -186,7 +190,7 @@ class Tower:
       for l in range(len(self.tower)):
          for b in range(3):
             if self.tower[l][b].ID == ID:
-               if flag == True and random.random() <self.tower[l][b].getProb():
+               if flag == True and random.random() < self.tower[l][b].getProb():
                   return False
                level = l
                block = b
@@ -232,7 +236,9 @@ class Tower:
          ###
          sequence = sequence + f"{randID}.{randPos} "
          if test == False:
-            print("Under Probability")
+            #print("Under Probability")
+            global PROB_UNDER_COUNT
+            PROB_UNDER_COUNT += 1
             return sequence
          if not self.isTowerValid():
             return sequence
@@ -247,7 +253,7 @@ class Tower:
 
       self.resetprob()
       #Increase based on how many turns have been played...(exponentially)
-      layer_increase = TURN_INCREASE * pow(2,(self.moves // 2))
+      layer_increase = TURN_INCREASE * pow(1.3,(self.moves // 2))
 
       #Increased based on how many layers are above...(linear)
       layers_above = []
@@ -258,16 +264,13 @@ class Tower:
                prob_add = 0.0000
             layers_above.extend([prob_add,prob_add,prob_add])
          prob_add -= SUBTRACT_PER_LAYER
-         
 
       #Sides are more likely to fall...(linear)
       side_prob = []
       for layer in self.tower:
          if len(layer) == 3:
             side_prob.extend([SIDE_INCREASE,0,SIDE_INCREASE])
-
       #Blocks around...(linear) - instantly apply
-
       if level > 1:
          for i in range(3):
             if i == block:
@@ -341,8 +344,9 @@ seqSet = set()
 seqLenLst = []
 p1_wins = 0
 p2_wins = 0
-SEQ_GEN_NUM = 10
+SEQ_GEN_NUM = 100000
 runGenerator = True
+
 
 if runGenerator:
    file = open(f"{SEQ_GEN_NUM}-sequences.txt", "w")
@@ -351,6 +355,7 @@ if runGenerator:
 
    i = 0
    while len(seqSet) < SEQ_GEN_NUM:
+      BLOCK_AROUND_LIST = [0.0000] * 54
       if (i+1) % 5000 == 0:
          print(f">> Generated {i+1} sequences...")
       startTower = Tower("start")
@@ -371,6 +376,7 @@ if runGenerator:
          p2_wins += 1
    print(f"P1 Win %: {(p1_wins/SEQ_GEN_NUM)*100}%")
    print(f"P2 Win %: {(p2_wins/SEQ_GEN_NUM)*100}%")
+   print(f"Times Failed Due to Probability: {(PROB_UNDER_COUNT)}")
    file.close()
 
 
@@ -414,10 +420,13 @@ testtower.move(45,3,False)
 testtower.move(48,1,False)
 testtower.move(51,2,False)
 testtower.move(54,3,False)
+testtower.move(6,2,False)
+testtower.move(37,1,False)
 '''
-testtower.move(28,1,False)
-for i in range(54):
-   print(BLOCK_AROUND_LIST[i])
+
+#testtower.move(28,1,False)
+#for i in range(54):
+   #print(BLOCK_AROUND_LIST[i])
 #testtower.move(30,1,False)
-print(testtower)
-print(testtower.print_prob())
+#print(testtower)
+#print(testtower.print_prob())
