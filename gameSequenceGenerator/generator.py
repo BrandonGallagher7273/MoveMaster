@@ -344,7 +344,7 @@ seqSet = set()
 seqLenLst = []
 p1_wins = 0
 p2_wins = 0
-SEQ_GEN_NUM = 100000
+SEQ_GEN_NUM = 10000
 runGenerator = True
 
 
@@ -360,15 +360,18 @@ if runGenerator:
          print(f">> Generated {i+1} sequences...")
       startTower = Tower("start")
       seq = startTower.generateSequence()
+      size = len(seqSet)
       seqSet.add(seq)
       seqSplit = seq.split()
-      seqLenLst.append(len(seqSplit))
+      if len(seqSet) > size:
+         seqLenLst.append(len(seqSplit))
       i += 1
    for seq in seqSet:
       file.write(f"{seq}\n")
    print("...done.\n")
    print("Min sequence length:",min(seqLenLst))
    print("Max sequence length:",max(seqLenLst))
+   print("Length of seqLenLst:",len(seqLenLst))
    for seqLen in seqLenLst:
       if seqLen % 2 == 0: # Even, P1 Wins
          p1_wins += 1
