@@ -36,3 +36,5 @@ Troubleshoot and conduct additional research about any issues that may arise
 
 Ensure our repository is up to date, including updated code and readme
 Create an outline document for next steps post-semester
+
+Testing MoveMaster Permissions
