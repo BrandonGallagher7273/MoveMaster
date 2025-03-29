@@ -1,218 +1,104 @@
-print("running game sequence generator...\n\n")
+import gymnasium
+import numpy as np
+import random
+from stable_baselines3 import PPO
 
-"""
-The following sequence is an example of how we will internally represent Jenga games:
+from jenga_env import JengaEnv
+from generator import Tower
 
-3.2 14.1 17.3 42.1 7.3 51.2 27.3 11.2 38.1 32.1 8.0
+def main():
+    env = JengaEnv(silent_prob=True, fail_ends_game=False)
+    model = PPO("MlpPolicy", env, verbose=1)
+    model.learn(total_timesteps=100000)
+    model.save("jenga_ppo_model")
 
-- The first double represents Player 1's move.
-- The second double represents Player 2's move.
-- This alternating pattern continues until the end of the game sequence.
-- If the number of entries in the sequence is even, Player 1 wins.
-- If the number of entries in the sequence is odd, Player 2 wins.
-- The number before the decimal denotes the ID of the block being moved.
-- The number after the decimal denotes the position (1, 2, or 3) that the block is placed in on top 
-of the tower, 0 indicating the end of the game sequence.
-"""
-class Block:
-   def __init__(self, ID, posXY):
-      self.ID = int(ID)
-      self.posXY = posXY
+    print("Training finished. Model saved as 'jenga_ppo_model'.")
 
-   def __repr__(self):
-      return f"<B{self.ID}>"
-      #return f"<B{self.ID}, ({self.posXY[0]},{self.posXY[1]})>" # Prints posXY of each block
+    choice = input(
+        "Choose an option:\n"
+        " a) Provide a sequence; model suggests next move.\n"
+        " b) Play a Jenga game against the model.\n"
+        "Enter 'a' or 'b': "
+    ).strip().lower()
 
-
-
-# For a tower to be considered valid, the following must be true:
-# [1] Each layer cannot have two consecutive missing blocks
-def isTowerValid(tower):
-   return True
-
-
-# nullBlock represents a 
-nullBlock = Block(-1,[0,0])
-
-tower = []
-blockID = 1
-for layer in range(18):
-   currLayer = []
-   for block in range(3):
-      if layer % 2 == 0:   # If the layer is EVEN
-         currLayer.append(Block(blockID,[1,block+1]))
-      else:                # If the layer is ODD
-         currLayer.append(Block(blockID,[block+1,1]))
-      blockID += 1
-   tower.append(currLayer)
-   
-
-for layer in tower:
-   print(layer)
-print("running game sequence generator...\n")
-
-"""
-The following sequence is an example of how we will internally represent Jenga games:
-
-3.2 14.1 17.3 42.1 7.3 51.2 27.3 11.2 38.1 32.1 8.0
-
-- The first double represents Player 1's move.
-- The second double represents Player 2's move.
-- This alternating pattern continues until the end of the game sequence.
-- If the number of entries in the sequence is even, Player 1 wins.
-- If the number of entries in the sequence is odd, Player 2 wins.
-- The number before the decimal denotes the ID of the block being moved.
-- The number after the decimal denotes the position (1, 2, or 3) that the block is placed in on top 
-of the tower, 0 indicating the end of the game sequence.
-"""
-
-# Defines a Block object. Each block has a unique ID, and posXY (does not have to be unique).
-# Blocks can be compared using the == operator.
-# Blocks can be printed as defined in __repr__.
-class Block:
-   def __init__(self, ID, posXY):
-      self.ID = int(ID)
-      self.posXY = posXY
-
-   def __repr__(self):
-      if self.ID == -1:
-         return f"<   >"
-      if self.ID < 10:
-         return f"<B0{self.ID}>"
-      return f"<B{self.ID}>"
-      #return f"<B{self.ID}, ({self.posXY[0]},{self.posXY[1]})>" # Prints posXY of each block
-
-   def __eq__(self, other):
-      isEqual = False
-      if self.ID == other.ID:
-         isEqual = True
-      return isEqual
-   
-   def __hash__(self):
-      return hash(self.ID)
-
-   def getPosXY(self):
-      return self.posXY
-      
-   
+    if choice=='a':
+        handle_sequence_option(env, model)
+    elif choice=='b':
+        play_env = JengaEnv(silent_prob=False, fail_ends_game=True)
+        handle_play_option(play_env, model)
+    else:
+        print("Invalid choice. Exiting.")
 
 
-class Tower:
-   def __init__(self,name):
-      self.name = str(name)
-      self.tower = []
-      blockID = 1
-      for layer in range(18):
-         currLayer = []
-         for block in range(3):
-            if layer % 2 == 0:   # If the layer is EVEN
-               currLayer.append(Block(blockID,[1,block+1]))
-            else:                # If the layer is ODD
-               currLayer.append(Block(blockID,[block+1,1]))
-            blockID += 1
-         self.tower.append(currLayer)
-   
-   def __repr__(self):
-      reprStr = ""
-      for l in range(len(self.tower)-1, -1, -1):
-         reprStr = reprStr + "\n" + str(self.tower[l])
-      return f":{self.name}:{reprStr}"
-      #return f"<B{self.ID}, ({self.posXY[0]},{self.posXY[1]})>" # Prints posXY of each block
-   
-   def getTopLayer(self):
-      return self.tower[len(self.tower)-1]
-   
-   # For a tower to be considered valid, the following must be true:
-   # [0] The number of nullBlocks in the tower must be equal to the number of moves made. (Trivial)
-   # [1] Each block in the tower must have a unique ID number, 1 --> 54 (excluding nullBlocks).
-   # [2] The tower must have at least 18 layers and at most 54 layers.
-   # [3] There must not be 2 or more consecutive nullBlocks in any layer (excluding an unfinished top layer).
-   # [4] There must always be 54 blocks in the tower.
-   def isTowerValid(self):
-      tower = self.tower
-      # Checking [1] and [4]...
-      blockSet = set()
-      blockSet.add(-1)
-      for layer in tower:
-         for block in layer:
-            blockSet.add(block.ID)
-            if block.ID != -1 and (block.ID < 1 or block.ID > 54):
-               return False
-      # UNCOMMENT THIS CODE WHEN ADDING BLOCKS TO TOP OF TOWER IS IMPLEMENTED #
-      """
-      if len(blockSet) != 55:
-         return False
-      """
-      # Checking [2]...
-      if len(tower) < 18 or len(tower) > 54:
-         return False
-      # Checking [3]...
-      nullBlock = Block(-1,[0,0])
-      for l,layer in enumerate(tower):
-         for b,block in enumerate(layer):
-            if(block == nullBlock and l != len(tower)-1):
-               if b == 1:
-                  if layer[b-1] == nullBlock or layer[b+1] == nullBlock:
-                     return False
-               elif b == 0:
-                  if layer[b+1] == nullBlock:
-                     return False
-               elif b == 2:
-                  if layer[b-1] == nullBlock:
-                     return False
-      # If all checks passed, return True               
-      return True
-   
-   # Moves Block to an open spot in the top layer.
-   def move(self,ID):
-      nullBlock = Block(-1,[0,0])
-      for l in range(len(self.tower)):
-         for b in range(3):
-            if self.tower[l][b].ID == ID:
-               self.tower[l][b] = nullBlock
-      
-      # If the top layer of the tower is not complete...
-      if len(set(self.getTopLayer())) != 3:
-         for b in range(3):
-            if self.tower[len(self.tower)-1][b] == nullBlock:
-               if len(self.tower)-1 % 2 == 0: # If the current layer is EVEN
-                  self.tower[len(self.tower)-1][b] = Block(ID,[1,b])
-                  return
-               else:
-                  self.tower[len(self.tower)-1][b] = Block(ID,[b,1])
-                  return
-      else:
-         newTop = []
-         newTop.append(Block(ID,[1,1]))
-         for i in range(2):
-            newTop.append(nullBlock)
-         self.tower.append(newTop)
-###################################################################################################
-###################################################################################################
+def handle_sequence_option(env, model):
+    seq_input = input("Enter your Jenga sequence (e.g., '1.1 2.3 7.2'): ")
+    seq = seq_input.strip().split()
+    customT = Tower("custom", silent_prob=True)
+    for mv in seq:
+        try:
+            b_str, p_str = mv.split(".")
+            b_id = int(b_str)
+            p_val= int(p_str)
+            success = customT.move(b_id, p_val, flag=False)
+            if not success:
+                print(f"Move {mv} failed, continuing.")
+        except:
+            print(f"Invalid format {mv}")
+            return
 
-# nullBlock represents an empty block (i.e., a space where a block was removed)
-nullBlock = Block(-1,[0,0])
+    env.tower = customT
+    env.current_step = 0
 
-# Creates and initializes Jenga tower to standard start state
-startTower = Tower("start")
-print(startTower)
+    obs = env._get_observation()
+    action, _ = model.predict(obs, deterministic=True)
+    blockID = (action//3)+1
+    topPos = (action%3)+1
 
-# Testing removing 1 block
-print("\n\n# After removing 1 block...")
-startTower.move(3)
-print(startTower)
-print("\nisTowerValid? >>",startTower.isTowerValid())
+    print(f"\n--- Next Best Move ---\nRemove block #{blockID}, place at position #{topPos}")
 
+def handle_play_option(env, model):
+    obs, info = env.reset()
+    done=False
+    truncated=False
+    user_turn=True
 
-# Testing removing 2 blocks
-print("\n\n# After removing a second block...")
-startTower.move(2)
-print(startTower)
-print("\nisTowerValid? >>",startTower.isTowerValid())
-"""
-newTower = Tower("tower1")
-print(newTower)
+    while not (done or truncated):
+        env.render()
+        if user_turn:
+            print("\n--- Your Turn ---")
+            mv = input("Enter your move as 'blockID.pos': ")
+            try:
+                b_str,p_str = mv.split(".")
+                b_id=int(b_str)
+                p_val=int(p_str)
+            except:
+                print("Invalid format")
+                continue
+            action = (b_id-1)*3+(p_val-1)
+            obs, reward, done, truncated, info = env.step(action)
+            if reward<0:
+                print(f"Reward={reward:.2f} => Possibly invalid or probability fail.")
+        else:
+            print("\n--- Model's Turn ---")
+            action, _=model.predict(obs, deterministic=True)
+            obs, reward, done, truncated, info=env.step(action)
+            b_id=(action//3)+1
+            p_val=(action%3)+1
+            print(f"Model removed block #{b_id}, placed at {p_val}. (Reward={reward:.2f})")
+            if reward<0:
+                print("Model's move invalid or prob fail?")
 
-#while isTowerValid(tower):
-#   print(yay)
-"""
+        if done:
+            print("\nTower toppled or move failed => game over!")
+            env.render()
+            break
+        elif truncated:
+            print("\nReached max steps => stop.")
+            break
+
+        user_turn= not user_turn
+
+    print("Game Over.")
+
+if __name__=="__main__":
+    main()
