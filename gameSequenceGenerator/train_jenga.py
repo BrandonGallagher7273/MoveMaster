@@ -1,6 +1,3 @@
-###############################################
-# train_jenga.py
-###############################################
 import os
 from sb3_contrib import MaskablePPO
 from sb3_contrib.common.wrappers import ActionMasker
@@ -12,29 +9,28 @@ def mask_fn(env: JengaEnv):
 
 def main():
     model_file="jenga_maskable_model.zip"
-    base_env=JengaEnv(silent_prob=True, fail_ends_game=False)
+    base_env=JengaEnv(silent_prob=True)
     env=ActionMasker(base_env, mask_fn)
 
     if os.path.isfile(model_file):
         choice=input(f"Found '{model_file}'. Load(l) or train(t)? [l/t]: ").strip().lower()
         if choice=="l":
-            print("Loading existing maskable model...")
+            print("Loading existing model => continuing training or usage.")
             model=MaskablePPO.load(model_file, env=env)
         else:
-            print("Training new maskable model => 1e6 steps.")
+            print("Training new model => 3M steps.")
             model=MaskablePPO("MlpPolicy", env, verbose=1)
-            model.learn(total_timesteps=1_000_000)
+            model.learn(total_timesteps=3_000_000)
             model.save(model_file)
-            print(f"Saved new model => {model_file}")
+            print(f"Saved => {model_file}")
     else:
-        print("No existing model => train from scratch (1e6 steps).")
+        print("No model => train from scratch (3M).")
         model=MaskablePPO("MlpPolicy", env, verbose=1)
-        model.learn(total_timesteps=1_000_000)
+        model.learn(total_timesteps=3_000_000)
         model.save(model_file)
-        print(f"Saved model => {model_file}")
+        print(f"Saved => {model_file}")
 
     print("Done with train_jenga.")
-
 
 if __name__=="__main__":
     main()

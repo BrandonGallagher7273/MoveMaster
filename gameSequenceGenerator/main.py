@@ -1,53 +1,42 @@
-###############################################
-# main.py
-###############################################
 import os
-import gymnasium
 import numpy as np
 import random
+
 from sb3_contrib import MaskablePPO
 from sb3_contrib.common.wrappers import ActionMasker
 
 from jenga_env import JengaEnv
 from generator import Tower
 
-def mask_fn(env: JengaEnv) -> np.ndarray:
+def mask_fn(env: JengaEnv):
     return env._compute_action_mask()
 
 def main():
-    model_file = "jenga_maskable_model.zip"
-    model_exists = os.path.isfile(model_file)
+    model_file="jenga_maskable_model.zip"
+    model_exists=os.path.isfile(model_file)
 
-    base_env = JengaEnv(silent_prob=True, fail_ends_game=False)
-    env = ActionMasker(base_env, mask_fn)
+    base_env=JengaEnv(silent_prob=True)
+    env=ActionMasker(base_env, mask_fn)
 
     if model_exists:
-        choice = input(
-            f"Found existing model '{model_file}'. Load(l) or train(t)? [l/t]: "
-        ).strip().lower()
+        choice=input(f"Found '{model_file}'. Load(l) or train(t)? [l/t]: ").strip().lower()
         if choice=="l":
-            print("Loading existing maskable model...")
-            model = MaskablePPO.load(model_file, env=env)
+            print("Loading existing model.")
+            model=MaskablePPO.load(model_file, env=env)
         else:
-            print("Training new maskable model for 1e6 steps...")
-            model = MaskablePPO("MlpPolicy", env, verbose=1)
-            model.learn(total_timesteps=1_000_000)
+            print("Training new model for 3M steps.")
+            model=MaskablePPO("MlpPolicy", env, verbose=1)
+            model.learn(total_timesteps=3_000_000)
             model.save(model_file)
-            print(f"Saved new model as '{model_file}'.")
+            print(f"Saved new model => {model_file}")
     else:
-        print("No existing model => training from scratch (1e6 steps).")
-        model = MaskablePPO("MlpPolicy", env, verbose=1)
-        model.learn(total_timesteps=2_000_000)
+        print("No existing model => train from scratch (3M steps).")
+        model=MaskablePPO("MlpPolicy", env, verbose=1)
+        model.learn(total_timesteps=3_000_000)
         model.save(model_file)
-        print(f"Model saved as '{model_file}'.")
+        print(f"Saved => {model_file}")
 
-    choice2 = input(
-        "Choose:\n"
-        " a) Provide a sequence => model suggests next move.\n"
-        " b) Play a Jenga game.\n"
-        "[a/b]: "
-    ).strip().lower()
-
+    choice2=input("Choose:\n a) Provide a sequence => model suggests next move.\n b) Play a Jenga game.\n[a/b]: ").strip().lower()
     if choice2=='a':
         handle_sequence_option(env, model)
     elif choice2=='b':
@@ -56,43 +45,44 @@ def main():
         print("Invalid => exit.")
 
 def handle_sequence_option(env, model):
-    seq_str = input("Enter a Jenga sequence (e.g. '1.1 2.3 7.2'): ")
-    seq = seq_str.split()
+    seq_input=input("Enter sequence (e.g. '1.1 2.3 7.2'): ")
+    seq=seq_input.strip().split()
 
-    customT = Tower("custom", silent_prob=True)
+    customT=Tower("custom", silent_prob=True)
     for mv in seq:
         try:
-            b_str, p_str = mv.split(".")
+            b_str, p_str=mv.split(".")
             b_id=int(b_str)
             pos=int(p_str)
-            success=customT.move(b_id,pos,False)
+            success=customT.move(b_id, pos, flag=False)
             if not success:
-                print(f"Move {mv} failed => ignoring.")
+                print(f"Move {mv} => fail => ignoring.")
         except:
-            print(f"Invalid format => {mv}.")
+            print(f"Invalid => {mv}")
             return
 
-    base_env = env.env  
-    base_env.tower = customT
+    base_env=env.env
+    base_env.tower=customT
     base_env.current_step=0
+    base_env.prev_top_count=base_env._count_top_blocks()
 
-    obs = base_env._get_observation()
-    action, _ = model.predict(obs, deterministic=True)
-    block_id=(action//3)+1
+    obs=base_env._get_observation()
+    action,_=model.predict(obs, deterministic=True)
+    blockID=(action//3)+1
     topPos=(action%3)+1
 
-    print(f"\n-- Next Best Move => remove block #{block_id}, place at {topPos}")
+    print(f"-- Next Best Move => remove block #{blockID}, place at {topPos}")
 
 def handle_play_option(model):
     from sb3_contrib.common.wrappers import ActionMasker
 
-    def mask_fn_play(env: JengaEnv)-> np.ndarray:
+    def mask_fn_play(env: JengaEnv):
         return env._compute_action_mask()
 
-    base_play_env=JengaEnv(silent_prob=False, fail_ends_game=True)
+    base_play_env=JengaEnv(silent_prob=False)
     play_env=ActionMasker(base_play_env, mask_fn_play)
 
-    obs, info = play_env.reset()
+    obs, info=play_env.reset()
     done=False
     truncated=False
     user_turn=True
@@ -104,32 +94,31 @@ def handle_play_option(model):
 
         if user_turn:
             print("\n--- Your Turn ---")
-            mv=input("Enter 'blockID.pos': ").strip()
+            mv_in=input("Enter 'blockID.pos': ").strip()
             try:
-                b_str,p_str=mv.split(".")
+                b_str,p_str=mv_in.split(".")
                 b_id=int(b_str)
                 pos=int(p_str)
             except:
-                print("Invalid => skip.")
+                print("Invalid => skipping.")
                 continue
 
             action=(b_id-1)*3 + (pos-1)
-            obs,rew,done,truncated,info=play_env.step(action)
-            if rew<0:
-                print(f"Reward={rew} => might end game.")
+            obs,reward,done,truncated,info=play_env.step(action)
+            if reward<0:
+                print(f"Reward={reward:.2f} => fail or risky => continuing anyway.")
         else:
             print("\n--- Model's Turn ---")
             action,_=model.predict(obs, deterministic=True)
-            obs,rew,done,truncated,info=play_env.step(action)
-
-            b_id=(action//3)+1
-            p_val=(action%3)+1
-            print(f"Model => block #{b_id} => top pos {p_val}, reward={rew:.2f}")
-            if rew<0:
-                print("Fail => game might end.")
+            obs,reward,done,truncated,info=play_env.step(action)
+            block_id=(action//3)+1
+            top_pos=(action%3)+1
+            print(f"Model => block #{block_id}, pos {top_pos}, reward={reward:.2f}")
+            if reward<0:
+                print("Model fail => continuing since fail doesn't end episode.")
 
         if done:
-            print("\nGame Over => final tower =>")
+            print("\nEpisode ended. Possibly tower invalid? Final tower =>")
             play_env.env.render()
             print("\n-- Final Probability Tower --")
             print(play_env.env.tower.print_prob())
@@ -141,7 +130,6 @@ def handle_play_option(model):
         user_turn=not user_turn
 
     print("Game end.")
-
 
 if __name__=="__main__":
     main()
